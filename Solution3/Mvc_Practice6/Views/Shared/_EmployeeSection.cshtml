@@ -1,0 +1,218 @@
+﻿@model IEnumerable<Mvc_Practice6.Models.Employee>
+@{
+    var x = ViewData["Depts"] as SelectList;
+}
+<br/>
+<br/>
+<div>
+    
+    <button class="btn btn-primary btn-lg" id="OpenDialog">
+        Create New
+    </button>
+    
+    <!--Dialog for Create-->
+    <div id="dialog" title="Create" style="text-align: left;display: none;">
+        <div>
+            Name:<input class="control-label" style="position: relative;left: 20px" type="text" id="Name" />
+        </div>
+        <br />
+        <div>
+            Department Name:
+            <select id="DropDown" class="ui-droppable"></select>
+        </div>
+
+        <br />
+        <div>
+            <input type="button" value="Create" class="btn btn-default" id="btn_save" onclick="EmpEntry()" />
+        </div>
+    </div>
+    </div>
+    
+    
+    <!--Dialog for Edit-->
+    <div id="dialog1" title="Edit" style="text-align: left;display: none;">
+        <div>
+            Name:<input class="control-label" style="position: relative;left: 20px" type="text" id="Name1" />
+        </div>
+        <br/>
+        <div>
+            Department Name:
+            <select id="DropDown1" class="ui-droppable"></select>
+        </div>
+      
+        <br />
+        <div >
+            <input type="button" value="Edit" class="btn btn-default" id="btn_save" onclick="EmpEdit()" />
+        </div>
+    </div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Department.Name)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Department.Name)
+            </td>
+            <td>
+                <a href="#" attr1='@Html.AttributeEncode(item.Id)' class="Edit">Edit</a>|      
+                <a href="#" attr2='@Html.AttributeEncode(item.Id)' class="Delete">Delete</a>
+            </td>
+        </tr>
+    }
+
+</table>
+
+<script>
+
+
+
+    $(function () {
+        FetchDataDropDown();
+
+        $("#dialog").dialog({
+            height: 300,
+            width: 600,
+            autoOpen: false,
+            show: {
+                effect: "blind",
+                duration: 1000
+
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            }
+        });
+
+        $("#dialog1").dialog({
+            height: 300,
+            width: 600,
+            autoOpen: false,
+            resizable: false,
+            show: {
+                effect: "blind",
+                duration: 1000
+
+            },
+            hide: {
+                effect: "explode",
+                duration: 1000
+            },
+           
+
+
+          
+        });
+
+
+
+        $("#OpenDialog").click(function () {
+
+            $.ajax({
+                url: "/Home/LoadDropDownList",
+                type: "GET",
+
+                datatype: "json",
+                success: function (data) {
+                    $("#dialog").dialog("open");
+                    $("#DropDown").empty();
+                    var jsonObj = JSON.parse(data);
+                    $.each(jsonObj, function (index, optiondata) {
+                        $("#DropDown").append("<option value='" + optiondata.Id + "'>" + optiondata.Name + "</option>");
+                    });
+
+                },
+                error: function (data) {
+                    alert("fail");
+                }
+            }
+           );
+        });
+
+
+        $(".Delete").click(function () {
+            DeleteEmp($(this));
+
+        });
+
+    });
+
+    function DeleteEmp(obj) {
+        var id = obj.attr('attr2');
+
+        $.ajax({
+            url: "/Home/DeleteEmp",
+            type: "POST",
+            data: { id: id },
+            datatype: "json",
+            success: function (data) {
+                alert("success");
+                var url = '@Url.Action("Index","Home")';
+                window.location.href = url;
+            },
+            error: function (data) {
+                alert("fail");
+            }
+        });
+    }
+
+
+
+
+ 
+    function FetchDataDropDown() {
+      
+        $.ajax({
+            url: "/Home/LoadDropDownList",
+            type: "GET",
+
+            datatype: "json",
+            success: function (data) {
+                $("#DropDown1").empty();
+                var jsonObj = JSON.parse(data);
+                $.each(jsonObj, function (index, optiondata) {
+                    $("#DropDown1").append("<option value='" + optiondata.Id + "'>" + optiondata.Name + "</option>");
+                });
+
+            },
+            error: function (data) {
+                alert("fail");
+            }
+        }
+        );
+    }
+
+    function EmpEdit() {
+        var id = $(".Edit").attr("attr1");
+        var deptid = document.getElementById("DropDown1").value;
+        var name = document.getElementById("Name1").value;
+        $.ajax({
+            url: "/Home/EditEmp",
+            type: "POST",
+            data: {id:id,name:name,departmentid:deptid},
+            datatype: "json",
+            success: function (data) {
+                alert("success");
+                var url = '@Url.Action("Index", "Home")';
+                window.location.href = url;
+            },
+            error: function (data) {
+                alert("fail");
+            }
+        });
+    }
+
+</script>

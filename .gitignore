@@ -1,0 +1,8 @@
+Solution3/packages/*
+Solution3/*.suo
+Solution3/Mvc_Practice6/bin/*
+Solution3/Mvc_Practice6/obj/*
+Solution3/Mvc_Practice6/*.csproj.user
+Solution3/Mvc_Practice6/Web.Debug.config
+Solution3/Mvc_Practice6/Web.Debug.config
+Solution3/Mvc_Practice6/App_Data/*
