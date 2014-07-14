@@ -1,0 +1,15 @@
+Solution3/packages/*
+Solution3/*.suo
+Solution3/Mvc_Practice6/bin/*.dll
+Solution3/Mvc_Practice6/obj/*.dll
+Solution3/Mvc_Practice6/obj/Debug/*.dll
+Solution3/Mvc_Practice6/*.asax
+Solution3/Mvc_Practice6/*.asax.cs
+Solution3/Mvc_Practice6/*.csproj
+Solution3/Mvc_Practice6/*.csproj.user
+Solution3/Mvc_Practice6/*.config
+Solution3/Mvc_Practice6/App_Data/*
+Solution3/Mvc_Practice6/Properties/*
+Solution3/Mvc_Practice6/Views/*.config
+Solution3/Mvc_Practice6/bin/*
+Solution3/Mvc_Practice6/obj/*

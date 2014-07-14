@@ -1,0 +1,174 @@
+﻿@{
+    ViewBag.Title = "Home";
+
+
+    var x = ViewBag.DeptId as SelectList;
+
+}
+
+<h2>Home</h2>
+
+@Ajax.ActionLink("Employees", "EmployeeSection", new AjaxOptions
+        {
+            HttpMethod = "GET",
+            UpdateTargetId = "DivHolder",
+            InsertionMode = InsertionMode.Replace,
+            LoadingElementId ="Spinner",
+            OnBegin = "clear"
+        })
+
+
+@Ajax.ActionLink("Departments", "DepartmentSection", new AjaxOptions
+        {
+            HttpMethod = "GET",
+            UpdateTargetId = "DivHolder",
+            InsertionMode = InsertionMode.Replace,
+            LoadingElementId = "Spinner",
+             OnBegin = "clear"
+
+        })
+<div id="Spinner" style="display:none;position: relative;left:50px"><img src="~/Images/spin.gif" /></div>
+<div id="DivHolder"></div>
+
+
+@section Scripts
+{
+    <script>
+       
+        $(function () {
+        
+            display();
+       
+            $(document).on('click', '.Edit', function() {
+                var id = $(this).attr("attr1");
+
+                $.ajax({
+                    url: "/Home/GetEmpById",
+                    type: "Get",
+                    async: true,
+                    contentType: 'application/json; charset=utf-8',
+                    data: { id: id },
+                    datatype: "json",
+                    success: function(result) {
+                        var jsonObj = JSON.parse(result);
+                        
+                        $("#dialog1").dialog('open');
+                      
+                        $("#Name1").val(jsonObj.Name);
+                       
+                        $("#DropDown1").val(jsonObj.DepartmentId);
+      
+                    },
+                    error: function(result) {
+
+                        alert('fail');
+                    }
+                });
+            });
+
+
+            $(document).on('click', '.EditDept', function () {
+                var id = $(this).attr("attr3");
+
+                $.ajax({
+                    url: "/Home/GetDeptById",
+                    type: "Get",
+                    async: true,
+                    contentType: 'application/json; charset=utf-8',
+                    data: { id: id },
+                    datatype: "json",
+                    success: function (result) {
+                        var jsonObj = JSON.parse(result);
+
+                        $("#dialog3").dialog('open');
+
+                        $("#DeptName1").val(jsonObj.Name);
+
+                    },
+                    error: function (result) {
+
+                        alert('fail');
+                    }
+                });
+            });
+
+        });
+
+
+        function EmpEntry() {
+            var name = document.getElementById("Name").value;
+            var defaultnum = document.getElementById("DropDown").value;
+            $.ajax({
+                url: "/Home/CreateEmployee",
+                type: "POST",
+                data: { name: name, departmentid: defaultnum },
+                datatype: "json",
+                success: function(data) {
+                    alert("success");
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function(data) {
+                    alert("fail");
+                }
+            });
+        }
+
+
+        function DeptEntry() {
+            var name = document.getElementById("DeptName").value;
+           
+            $.ajax({
+                url: "/Home/CreateDepartment",
+                type: "POST",
+                data: { name: name },
+                datatype: "json",
+                success: function (data) {
+                    alert("success");
+                    var url = '@Url.Action("Index", "Home")';
+                    window.location.href = url;
+                },
+                error: function (data) {
+                    alert("fail");
+                }
+            });
+        }
+        function display() {
+            $("#Spinner").show();
+            $.ajax({
+                url: "/Home/EmployeeSection",
+                type: "Get",
+                datatype: "html",
+                success: function (data) {
+                    $("#DivHolder").html(data);
+                    $("#Spinner").hide();
+                }
+            });
+        };
+
+        function displayEmpByDepartment(obj) {
+            var id = obj.attr("attr3");
+            $.ajax({
+                url: "/Home/GetAllEmpDept",
+                type: "Get",
+                data:{id:id},
+                datatype: "html",
+                success: function (data) {
+                    $("#DivHolder").html(data);
+                },
+                error:function(data) {
+                    alert("fail");
+
+                } 
+            });
+
+
+        };
+
+
+        function clear() {
+            $("#DivHolder").empty();
+        }
+
+    </script>
+}
